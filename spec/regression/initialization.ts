@@ -1,5 +1,4 @@
 import { Database } from 'arangojs';
-import { Collection } from 'arangojs/collection';
 import { existsSync, readFileSync } from 'fs';
 import { ExecutionResult, graphql, GraphQLSchema } from 'graphql';
 import stripJsonComments from 'strip-json-comments';
@@ -7,11 +6,17 @@ import { ArangoDBConfig } from '../../src/database/arangodb';
 
 const DATABASE_NAME = 'cruddl-test-temp';
 // arangodb only listens on ipv4, but localhost may resolve to ::1, so explicitly state 127.0.0.1
-const DATABASE_URL = 'http://root:@127.0.0.1:8529';
+const DATABASE_URL = 'http://127.0.0.1:8529';
+const DATABASE_USER = 'root';
+const DATABASE_PASSWORD = '';
 
 export async function createTempDatabase(): Promise<ArangoDBConfig> {
     const systemDatabase = new Database({
         url: DATABASE_URL,
+        auth: {
+            username: DATABASE_USER,
+            password: DATABASE_PASSWORD,
+        },
     });
     const dbs = await systemDatabase.listDatabases();
     if (dbs.indexOf(DATABASE_NAME) >= 0) {

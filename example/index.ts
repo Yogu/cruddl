@@ -4,7 +4,7 @@ import { ApolloServer } from 'apollo-server';
 // arangodb --starter.local --starter.mode=single  --starter.port=8529
 const db = new ArangoDBAdapter({
     databaseName: 'test',
-    url: 'http+tcp://root:@localhost:8529',
+    url: 'http://localhost:8529',
     user: 'root',
     password: '',
 });

@@ -1,5 +1,5 @@
 import { Database } from 'arangojs';
-import { CollectionType } from 'arangojs/collection';
+import { CollectionType } from 'arangojs/collections';
 import { NORM_CI_ANALYZER } from '../../../model/implementation/flex-search';
 import { ProjectOptions } from '../../../config/interfaces';
 import { Logger } from '../../../config/logging';

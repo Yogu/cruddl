@@ -4,7 +4,7 @@ import { ArangoDBAdapter } from '../../../src/database/arangodb';
 import { createSimpleModel } from '../../model/model-spec.helper';
 import { createTempDatabase, getTempDatabase } from '../../regression/initialization';
 import { isArangoDBDisabled } from './arangodb-test-utils';
-import { ArangoSearchViewProperties } from 'arangojs/view';
+import { ArangoSearchViewProperties } from 'arangojs/views';
 
 describe('ArangoDBAdapter', () => {
     describe('updateSchema', () => {

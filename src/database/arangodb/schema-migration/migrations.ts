@@ -1,5 +1,5 @@
-import { CreateAnalyzerOptions } from 'arangojs/analyzer';
-import { ArangoSearchViewPropertiesOptions, CreateArangoSearchViewOptions } from 'arangojs/view';
+import { CreateAnalyzerOptions } from 'arangojs/analyzers';
+import { ArangoSearchViewPropertiesOptions, CreateArangoSearchViewOptions } from 'arangojs/views';
 import { Relation } from '../../../model/implementation';
 import { describeIndex, getIndexDescriptor, IndexDefinition } from './index-helpers';
 

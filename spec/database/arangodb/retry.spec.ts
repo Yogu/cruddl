@@ -63,9 +63,7 @@ async function prepareAdapter(
     const adapter = new ArangoDBAdapter({
         ...dbConfig,
         arangoJSConfig: {
-            agentOptions: {
-                maxSockets: PARALLELISM,
-            },
+            poolSize: PARALLELISM,
         },
         retriesOnConflict: maxRetries,
     });

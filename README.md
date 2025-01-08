@@ -37,7 +37,7 @@ Install [ArangoDB](https://www.arangodb.com/) and create a new database.
 import { ArangoDBAdapter } from 'cruddl';
 const db = new ArangoDBAdapter({
     databaseName: 'databaseName',
-    url: 'http://root:@localhost:8529',
+    url: 'http://localhost:8529',
     user: 'root',
     password: '',
 });

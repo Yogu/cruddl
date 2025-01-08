@@ -21,8 +21,8 @@ export class TransactionTimeoutError extends Error {
  * Is thrown if a transaction is cancelled via the cancellation token before it completed
  */
 export class TransactionCancelledError extends Error {
-    constructor() {
-        super(`Transaction was cancelled and has been rolled back`);
+    constructor(message = `Transaction was cancelled and has been rolled back`) {
+        super(message);
         this.name = this.constructor.name;
     }
 }

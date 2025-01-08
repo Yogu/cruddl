@@ -10,11 +10,8 @@ export class ArangoDBVersionHelper {
     constructor(private readonly db: Database) {}
 
     async getArangoDBVersionAsString(): Promise<string | undefined> {
-        const result = await this.db.route('_api').get('version');
-        if (!result || !result.body || !result.body.version) {
-            return undefined;
-        }
-        return result.body.version;
+        const versionInfo = await this.db.version();
+        return versionInfo.version;
     }
 
     async getArangoDBVersion(): Promise<ArangoDBVersion | undefined> {

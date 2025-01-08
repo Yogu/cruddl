@@ -14,7 +14,12 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
-    "lib": ["ES2022"],
+    "lib": [
+      "ES2022",
+
+      // workaround until https://github.com/arangodb/arangojs/issues/818 is fixed
+      "DOM"
+    ],
     "paths": {
       "*": ["./src/typings/*"]
     },

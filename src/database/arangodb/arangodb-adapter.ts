@@ -1,13 +1,15 @@
 import { Database } from 'arangojs';
+import { v4 as uuid } from 'uuid';
 import { globalContext } from '../../config/global';
 import { ProjectOptions } from '../../config/interfaces';
 import { Logger } from '../../config/logging';
-import { DefaultClock, ExecutionOptions } from '../../execution/execution-options';
+import { ExecutionOptions } from '../../execution/execution-options';
 import {
     ConflictRetriesExhaustedError,
     TransactionCancelledError,
     TransactionTimeoutError,
 } from '../../execution/runtime-errors';
+import { TransactionError } from '../../execution/transaction-error';
 import { Model } from '../../model';
 import { ALL_QUERY_RESULT_VALIDATOR_FUNCTION_PROVIDERS, QueryNode } from '../../query-tree';
 import { FlexSearchTokenization } from '../../query-tree/flex-search';
@@ -25,10 +27,6 @@ import {
 } from '../database-adapter';
 import { AQLCompoundQuery, aqlConfig, AQLExecutableQuery } from './aql';
 import { generateTokenizationQuery, getAQLQuery } from './aql-generator';
-import {
-    RequestInstrumentation,
-    RequestInstrumentationPhase,
-} from './arangojs-instrumentation/config';
 import { CancellationManager } from './cancellation-manager';
 import {
     ArangoDBConfig,
@@ -42,11 +40,7 @@ import { hasRevisionAssertions } from './revision-helper';
 import { SchemaAnalyzer } from './schema-migration/analyzer';
 import { SchemaMigration } from './schema-migration/migrations';
 import { MigrationPerformer } from './schema-migration/performer';
-import { TransactionError } from '../../execution/transaction-error';
 import { ArangoDBVersion, ArangoDBVersionHelper } from './version-helper';
-import { v4 as uuid } from 'uuid';
-
-const requestInstrumentationBodyKey = 'cruddlRequestInstrumentation';
 
 interface ArangoExecutionOptions {
     readonly queries: ReadonlyArray<AQLExecutableQuery>;
@@ -109,7 +103,16 @@ export class ArangoDBAdapter implements DatabaseAdapter {
         private schemaContext?: ProjectOptions,
     ) {
         this.logger = getArangoDBLogger(schemaContext);
-        this.db = initDatabase(config);
+        this.db = initDatabase({
+            ...config,
+            arangoJSConfig: {
+                ...(config.arangoJSConfig ?? {
+                    beforeRequest: (req) => {
+                        req.headers;
+                    },
+                }),
+            },
+        });
         this.analyzer = new SchemaAnalyzer(config, schemaContext);
         this.migrationPerformer = new MigrationPerformer(config);
         this.versionHelper = new ArangoDBVersionHelper(this.db);
@@ -611,65 +614,93 @@ export class ArangoDBAdapter implements DatabaseAdapter {
             }
         }
 
-        // we pass the cancellationToken to the call to Database.transaction(). This will remove the request from the
-        // http agent's queue. However, it won't cancel the request if already sent because ArangoDB does NOT abort a
-        // query in this case, so this would not help. In the contrary, it would free up the connection in the arangojs
-        // http agent so that more queries can be run in parallel than configured (via maxSockets). This would be
-        // dangerous because it might exhaust ArangoDB threads so that ArangoDB no longer responds, and it might even
-        // cause too much memory to be allocated. For this reason, we only kill the query (see below) and let that
-        // killed query also abort the transaction.
-        // Note: this only works because we use our own version of the arangojs database (CustomDatbase)
-        (args as any)[requestInstrumentationBodyKey] = {
-            onPhaseEnded: (phase: RequestInstrumentationPhase) => {
-                watch.stop(phase);
-
-                if (phase === 'socketInit') {
-                    // start the timeout promise if needed
-                    if (requestSentCallback) {
-                        requestSentCallback();
-                    }
-
-                    if (cancellationToken) {
-                        // delay cancellation a bit for two reasons
-                        // - don't take the effort of finding and killing a query if it's fast anyway
-                        // - the cancellation might occur before the transaction script starts the query
-                        // we only really need this to cancel long-running queries
-                        cancellationToken
-                            .then(() => sleep(30))
-                            .then(() => {
-                                // don't try to kill the query if the transaction() call finished already - this would mean that it
-                                // either was faster than the delay above, or the request was removed from the request queue
-                                if (!isTransactionFinished) {
-                                    this.logger.debug(`Cancelling query ${transactionID}`);
-                                    this.cancellationManager
-                                        .cancelQuery(transactionID)
-                                        .catch((e) => {
-                                            this.logger.warn(
-                                                `Error cancelling query ${transactionID}: ${e.stack}`,
-                                            );
-                                        });
-                                }
-                            });
-                    }
-                }
-            },
-            cancellationToken,
-        } as RequestInstrumentation;
-
         const dbStartTime = getPreciseTime();
         let transactionResult: ArangoTransactionResult;
         try {
-            transactionResult = await this.db.executeTransaction(
+            // Calling request() instead of executeTransaction() so we can pass beforeRequest
+            // Created a feature request to be able to pass beforeRequest to execute Transaction(): https://github.com/arangodb/arangojs/issues/817
+            transactionResult = await this.db.request(
                 {
-                    read: aqlQuery.readAccessedCollections.slice(),
-                    write: aqlQuery.writeAccessedCollections.slice(),
+                    method: 'POST',
+                    pathname: '/_api/transaction',
+                    body: {
+                        collections: {
+                            read: aqlQuery.readAccessedCollections,
+                            write: aqlQuery.writeAccessedCollections,
+                        },
+                        action: this.arangoExecutionFunction,
+                        params: args,
+                        waitForSync: true,
+                    },
+                    beforeRequest: (req) => {
+                        watch.stop('queuing');
+
+                        // start the timeout promise if needed (transactionTimeoutMs should not include queue time)
+                        if (requestSentCallback) {
+                            requestSentCallback();
+                        }
+
+                        if (wasCancelled) {
+                            throw new TransactionCancelledError(
+                                'Transaction was cancelled before it was started',
+                            );
+                        }
+
+                        if (cancellationToken) {
+                            // delay cancellation a bit for two reasons
+                            // - don't take the effort of finding and killing a query if it's fast anyway
+                            // - the cancellation might occur before the transaction script starts the query (so it would not find it)
+                            // we only really need this to cancel long-running queries
+                            // Also, note that we currently have no way to pass the cancellation token to the actual request
+                            // Even if there was a way, we still probably would not want to do this. ArangoDB does not kill a query
+                            // when the request is cancelled, so it would continue to process the request, but our queue would free up
+                            // a slot -> we would effectively execute more queries in parallel than configured, potentially overloading the db
+                            // That's why it is better to kill the query using the CancellationManager, and then let ArangoDB report the erorr to us
+                            cancellationToken
+                                .then(() => sleep(30))
+                                .then(() => {
+                                    // don't try to kill the query if the transaction() call finished already - this would mean that it
+                                    // either was faster than the delay above, or the request was removed from the request queue
+                                    if (!isTransactionFinished) {
+                                        this.logger.debug(`Cancelling query ${transactionID}`);
+                                        this.cancellationManager
+                                            .cancelQuery(transactionID)
+                                            .catch((e) => {
+                                                this.logger.warn(
+                                                    `Error cancelling query ${transactionID}: ${e.stack}`,
+                                                );
+                                            });
+                                    }
+                                });
+                        }
+
+                        // TODO figure out if we can get more timings. This is what we did earlier:
+                        // although it's usually not relevant because the connections are using keepalive
+                        /*
+                            req.on('socket', (socket: Socket) => {
+                                notifyAboutPhaseEnd(requestInstrumentation, 'socketInit');
+                                if (knownSockets.has(socket)) {
+                                    return;
+                                }
+                                knownSockets.add(socket);
+                                socket.on('lookup', () =>
+                                    notifyAboutPhaseEnd(requestInstrumentation, 'lookup'),
+                                );
+                                socket.on('connect', () =>
+                                    notifyAboutPhaseEnd(requestInstrumentation, 'connecting'),
+                                );
+                            });
+                         */
+                    },
+                    afterResponse: () => {
+                        // this is called when we recieved the headers
+                        watch.stop('waiting');
+                    },
                 },
-                this.arangoExecutionFunction,
-                {
-                    params: args,
-                    waitForSync: true,
-                },
+                (res) => res.parsedBody.result,
             );
+            // request() resolves after it read and processed the response
+            watch.stop('receiving');
         } catch (e: any) {
             isTransactionFinished = true;
             if (e.message.startsWith('RolledBackTransactionError: ')) {

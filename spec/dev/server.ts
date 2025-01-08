@@ -13,9 +13,9 @@ import { createFastApp } from './fast-server';
 
 const port = 3000;
 const databaseName = 'cruddl';
-const databaseURL = 'http://root:@localhost:8529';
-
-// const databaseURL = 'http://root:@localhost:7050';
+const databaseURL = 'http://localhost:8529';
+const databaseUser = 'root';
+const databasePassword = '';
 
 export async function start() {
     const loggerProvider = new Log4jsLoggerProvider('error');
@@ -28,6 +28,8 @@ export async function start() {
             {
                 databaseName,
                 url: databaseURL,
+                user: databaseUser,
+                password: databasePassword,
                 doNonMandatoryMigrations: true,
                 createIndicesInBackground: true,
             },
