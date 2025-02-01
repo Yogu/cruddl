@@ -1107,12 +1107,10 @@ function getFastStartsWithQuery(lhs: AQLFragment, rhsValue: string): AQLFragment
         return aql`IS_STRING(${lhs})`;
     }
 
-    // this works as long as the highest possible code point is also the last one in the collation
-    const maxChar = String.fromCodePoint(0x10ffff);
-    const maxStr = rhsValue + maxChar;
-
-    // UPPER is used to get the "smallest" representation of the value case-sensitive, LOWER for the "largest".
-    // the ordering looks like this:
+    // this function assumes that a collator is used that places upper and lower case of characters next to each other.
+    // It also assumes that strings are always placed immediately after all case-variants of its one-character shorter prefix.
+    // It also assumes that \u10ffff is always the last character in order
+    // For example, this is the sort behavior if arangodb is started with --default-language=en_US:
     // [
     //   "A",
     //   "a",
@@ -1127,26 +1125,33 @@ function getFastStartsWithQuery(lhs: AQLFragment, rhsValue: string): AQLFragment
     //   "B",
     //   "b"
     // ]
-    // This means that if the actual value is longer than the given prefix (i.e. it's a real prefix and not the whole
-    // string), the match will be case-insensitive. However, if the remaining suffix if empty, the search would
-    // sometimes be case-sensitive: If you search for the prefix a, A will not be found (because A < a), but a will
-    // match the prefix filter A. In order to avoid this, one needs to convert the given string to the lowest value
-    // within its case-sensitivity category. For ASCII characters, that's simply UPPER(), but that will not always be
-    // the case. The same thing applies to the upper bound.
-    return aql`(${lhs} >= UPPER(${rhsValue}) && ${lhs} < LOWER(${maxStr}))`;
+    // value >= "A" && value <= "a" therefore is identical to LOWER(value) == LOWER("a")
+    // value >= "A" && value < "a\u10ffff" is identical to STARTS_WITH(LOWER(value), LOWER("a"))
 
-    // the following does not work because string sorting depends on the DB's collator
-    // which does not necessarily sort the characters by code points
-    // charCodeAt / fromCharCode works on code units, and so does the string indexer / substr / length
-    /*const lastCharCode = rhsValue.charCodeAt(rhsValue.length - 1);
-    const nextCharCode = lastCharCode + 1;
-    if (nextCharCode >= 0xD800) {
-        // don't mess with surrogate pairs
-        return undefined;
+    // IMPORTANT: these assumptions are not true for the en_US_POSIX languages (neither with --icu-language, nor
+    // with --default-language). en_US_POSIX is very close to the code points, so it places all uppercase characters
+    // together, followed by all lowercase characters ("A", "B", ..., "Z", ..., "a", "b", ...)
+    // so we currently do not suppor the en_US_POSIX language.
+
+    // Other collators have lowercase first, then uppercase, w.f. --icu-language=en_US.
+    // To support both variants, we compute the MIN and MAX of UPPER and LOWER
+    // arangodb will evaluate those MIN/MAX epxressions statically so it can still use them as index ranges
+    // (remove-unnecessary-calculations-2)
+    // rhs is always a string literal (and usually rather short, since it's just a filter condition),
+    // so it's not really a problem to repeat it
+
+    // this works as long as the highest possible code point is also the last one in the collation
+    const maxChar = String.fromCodePoint(0x10ffff);
+    const maxStr = rhsValue + maxChar;
+
+    // if the prefix e.g. only consists of digits, it's even easier because we don't need to case-convert it
+    if (isStringCaseInsensitive(rhsValue)) {
+        return aql`(${lhs} >= ${rhsValue} && ${lhs} < ${maxStr})`;
     }
 
-    const nextValue = rhsValue.substring(0, rhsValue.length - 1) + String.fromCharCode(nextCharCode);
-    return aql`(${lhs} >= ${rhsValue} && ${lhs} < ${nextValue})`;*/
+    const lowerBoundFrag = aql`MIN([UPPER(${rhsValue}), LOWER(${rhsValue})])`;
+    const upperBoundFrag = aql`MAX([LOWER(${maxStr}), UPPER(${maxStr})])`;
+    return aql`(${lhs} >= ${lowerBoundFrag} && ${lhs} < ${upperBoundFrag})`;
 }
 
 function getEqualsIgnoreCaseQuery(lhs: AQLFragment, rhsValue: string): AQLFragment {
@@ -1156,8 +1161,8 @@ function getEqualsIgnoreCaseQuery(lhs: AQLFragment, rhsValue: string): AQLFragme
     }
 
     // w.r.t. UPPER/LOWER, see the comment in getFastStartsWithQuery
-    const lowerBoundFrag = aql`UPPER(${rhsValue})`;
-    const upperBoundFrag = aql`LOWER(${rhsValue})`;
+    const lowerBoundFrag = aql`MIN([UPPER(${rhsValue}), LOWER(${rhsValue})])`;
+    const upperBoundFrag = aql`MAX([LOWER(${rhsValue}), UPPER(${rhsValue})])`;
     return aql`(${lhs} >= ${lowerBoundFrag} && ${lhs} <= ${upperBoundFrag})`;
 }
 
