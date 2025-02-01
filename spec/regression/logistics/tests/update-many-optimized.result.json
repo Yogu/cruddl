@@ -37,9 +37,15 @@
           "dgInfo": {
             "flashpoint": "37 °C",
             "unNumber": "123",
-            "notices": ["handle with care", "do not throw"]
+            "notices": [
+              "handle with care",
+              "do not throw"
+            ]
           },
-          "serialNumbers": ["456", "424242"],
+          "serialNumbers": [
+            "456",
+            "424242"
+          ],
           "items": [
             {
               "itemNumber": "1001"
@@ -54,14 +60,7 @@
               "itemNumber": "45"
             }
           ],
-          "handlingUnits": [
-            {
-              "huNumber": "1000014"
-            },
-            {
-              "huNumber": "123"
-            }
-          ]
+          "handlingUnits": []
         },
         {
           "deliveryNumber": "1000521",
@@ -98,9 +97,15 @@
           "dgInfo": {
             "flashpoint": "37 °C",
             "unNumber": "123",
-            "notices": ["do not care", "throw with handle"]
+            "notices": [
+              "do not care",
+              "throw with handle"
+            ]
           },
-          "serialNumbers": ["456", "424242"],
+          "serialNumbers": [
+            "456",
+            "424242"
+          ],
           "items": [
             {
               "itemNumber": "2001"
@@ -115,17 +120,7 @@
               "itemNumber": "45"
             }
           ],
-          "handlingUnits": [
-            {
-              "huNumber": "1000007"
-            },
-            {
-              "huNumber": "1000021"
-            },
-            {
-              "huNumber": "456"
-            }
-          ]
+          "handlingUnits": []
         }
       ]
     }
@@ -168,9 +163,15 @@
           "dgInfo": {
             "flashpoint": "37 °C",
             "unNumber": "123",
-            "notices": ["handle with care", "do not throw"]
+            "notices": [
+              "handle with care",
+              "do not throw"
+            ]
           },
-          "serialNumbers": ["456", "424242"],
+          "serialNumbers": [
+            "456",
+            "424242"
+          ],
           "items": [
             {
               "itemNumber": "1001"
@@ -185,14 +186,7 @@
               "itemNumber": "45"
             }
           ],
-          "handlingUnits": [
-            {
-              "huNumber": "1000014"
-            },
-            {
-              "huNumber": "123"
-            }
-          ]
+          "handlingUnits": []
         }
       ]
     }

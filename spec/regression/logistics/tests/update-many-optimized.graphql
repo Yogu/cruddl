@@ -32,6 +32,7 @@ fragment Request on Delivery {
     }
 }
 
+# triggers a different code path (because there are no relations)
 mutation update {
     updateDeliveries(
         input: [
@@ -50,8 +51,6 @@ mutation update {
                 }
                 serialNumbers: ["456", "424242"]
                 addItems: [{ itemNumber: "44" }, { itemNumber: "45" }]
-                addHandlingUnits: ["@{ids/HandlingUnit/1}", "@{ids/HandlingUnit/2}"]
-                createHandlingUnits: [{ huNumber: "123" }]
             }
             {
                 id: "@{ids/Delivery/2}"
@@ -68,8 +67,6 @@ mutation update {
                 }
                 serialNumbers: ["456", "424242"]
                 addItems: [{ itemNumber: "44" }, { itemNumber: "45" }]
-                addHandlingUnits: ["@{ids/HandlingUnit/1}", "@{ids/HandlingUnit/3}"]
-                createHandlingUnits: [{ huNumber: "456" }]
             }
         ]
     ) {
