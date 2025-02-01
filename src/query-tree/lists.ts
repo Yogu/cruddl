@@ -161,6 +161,20 @@ export class FirstOfListQueryNode extends QueryNode {
     }
 }
 
+
+export class IntersectionQueryNode extends QueryNode {
+    constructor(public readonly listNodes: ReadonlyArray<QueryNode>) {
+        super();
+    }
+
+    describe() {
+        if (!this.listNodes.length) {
+            return `[]`;
+        }
+        return `intersection(${this.listNodes.map(listNode => listNode.describe()).join(',')})`;
+    }
+}
+
 /**
  * A node that evaluates to a specific item of a list, or NULL if the list is empty
  */

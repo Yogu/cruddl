@@ -28,6 +28,7 @@ import {
     FieldQueryNode,
     FirstOfListQueryNode,
     FollowEdgeQueryNode,
+    IntersectionQueryNode,
     ListItemQueryNode,
     ListQueryNode,
     LiteralQueryNode,
@@ -454,6 +455,12 @@ register(ConcatListsQueryNode, (node, context) => {
     const listNodeStr = aql.join(listNodes, aql`, `);
     // note: UNION just appends, there is a special UNION_DISTINCT to filter out duplicates
     return aql`UNION(${listNodeStr})`;
+});
+
+register(IntersectionQueryNode, (node, context) => {
+    const listNodes = node.listNodes.map((node) => processNode(node, context));
+    const listNodeStr = aql.join(listNodes, aql`, `);
+    return aql`INTERSECTION(${listNodeStr})`;
 });
 
 register(VariableQueryNode, (node, context) => {
@@ -1562,9 +1569,13 @@ function getRelationTraversalFragment({
                 if (
                     !(
                         segment.vertexFilter instanceof BinaryOperationQueryNode &&
-                        segment.vertexFilter.lhs instanceof FieldQueryNode &&
-                        segment.vertexFilter.lhs.objectNode === segment.vertexFilterVariable
+                        segment.vertexFilter.lhs instanceof FieldQueryNode
                     )
+                    // !(
+                    //     segment.vertexFilter instanceof BinaryOperationQueryNode &&
+                    //     segment.vertexFilter.lhs instanceof FieldQueryNode &&
+                    //     segment.vertexFilter.lhs.objectNode === segment.vertexFilterVariable
+                    // )
                 ) {
                     throw new Error(`Unsupported filter pattern for graph traversal`);
                 }

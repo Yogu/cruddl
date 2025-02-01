@@ -5,7 +5,10 @@ import {
     BinaryOperationQueryNode,
     BinaryOperator,
     ConstBoolQueryNode,
+    CountQueryNode,
     FieldQueryNode,
+    IntersectionQueryNode,
+    ListQueryNode,
     LiteralQueryNode,
     QueryNode,
     UnknownValueQueryNode,
@@ -240,6 +243,20 @@ export class ProfileBasedPermissionDescriptor extends PermissionDescriptor {
 
             if (restriction.valueTemplate !== undefined) {
                 const values = permission.evaluateTemplate(restriction.valueTemplate, authContext);
+                
+                if (fieldPath.isList) {
+                    return new BinaryOperationQueryNode(
+                        new CountQueryNode(
+                            new IntersectionQueryNode([
+                                fieldNode,
+                                new LiteralQueryNode(values),
+                            ])
+                        ),
+                        BinaryOperator.GREATER_THAN_OR_EQUAL,
+                        new LiteralQueryNode(1)
+                    );
+                }
+
                 return new BinaryOperationQueryNode(
                     fieldNode,
                     BinaryOperator.IN,
@@ -255,6 +272,18 @@ export class ProfileBasedPermissionDescriptor extends PermissionDescriptor {
                 );
                 if (!sanitizedClaimValues.length) {
                     return ConstBoolQueryNode.FALSE;
+                }
+                if (fieldPath.isList) {
+                    return new BinaryOperationQueryNode(
+                        new CountQueryNode(
+                            new IntersectionQueryNode([
+                                fieldNode,
+                                new LiteralQueryNode(sanitizedClaimValues),
+                            ])
+                        ),
+                        BinaryOperator.GREATER_THAN_OR_EQUAL,
+                        new LiteralQueryNode(1)
+                    );
                 }
                 return new BinaryOperationQueryNode(
                     fieldNode,
