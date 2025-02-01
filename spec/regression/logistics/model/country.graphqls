@@ -3,6 +3,7 @@ type Country
     @roles(read: ["allusers"], readWrite: ["admin"]) {
     isoCode: String @key
     description: [Translation]
+    descriptionI18nString: I18nString
     totalInvestment: String @roles(readWrite: "accounting")
     someKey: String @flexSearch
 }

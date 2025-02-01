@@ -1,0 +1,17 @@
+query filterI18nString {
+    allCountries(filter: { descriptionI18nString_some: { value: "Germany" } }) {
+        isoCode
+    }
+}
+
+query filterI18nStringWithCorrectLanguage {
+    allCountries(filter: { descriptionI18nString_some: { language: "en", value: "Germany" } }) {
+        isoCode
+    }
+}
+
+query filterI18nStringWithIncorrectLanguage {
+    allCountries(filter: { descriptionI18nString_some: { language: "de", value: "Germany" } }) {
+        isoCode
+    }
+}

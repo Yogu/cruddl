@@ -544,6 +544,11 @@
               "deprecationReason": null
             },
             {
+              "name": "descriptionI18nString",
+              "description": null,
+              "deprecationReason": null
+            },
+            {
               "name": "totalInvestment",
               "description": null,
               "deprecationReason": null
@@ -768,6 +773,12 @@
         {
           "name": "TranslationOrderBy",
           "description": null,
+          "fields": null,
+          "inputFields": null
+        },
+        {
+          "name": "I18nString",
+          "description": "The \"I18nString\" scalar type represents an internationalized string.\n\n    Structurally, the \"I18nString`\" type is equivalent to the \"StringMap\" type. Keys are ISO 639-1 language codes, and values are the localized strings. In the future, more specific features may be added to this type, so it is preferred over the \"StringMap\" type to represent internationalized strings.\n\n    Values are *not* additionally JSON-encoded or JSON-parsed, so e.g. pass a raw JSON object here instead of a JSON-representation of that object.",
           "fields": null,
           "inputFields": null
         },
@@ -997,6 +1008,11 @@
               "deprecationReason": null
             },
             {
+              "name": "descriptionI18nString_some",
+              "description": "Makes sure at least one of the entries in \"descriptionI18nString\" has a value that matches a certain filter.\n\nNote that you can specify the empty object for this filter to make sure `descriptionI18nString` has at least one item.",
+              "deprecationReason": null
+            },
+            {
               "name": "totalInvestment",
               "description": "Checks if `totalInvestment` equals a specified string, case-sensitively.\n\nIf an index exists on `totalInvestment`, it can be used.\n\nSee also `like` for a case-insensitive filter.",
               "deprecationReason": null
@@ -1154,6 +1170,183 @@
             {
               "name": "someKey_not_like",
               "description": "Checks if `someKey` does *not* match a pattern case-insensitively with the following placeholders:\n\n- `%` matches any sequence of characters, including the empty string\n- `_` matches exactly one character\n- `\\` can be used to escape the placeholders (use `\\\\` for a literal backslash)",
+              "deprecationReason": null
+            },
+            {
+              "name": "AND",
+              "description": "A field that checks if all filters in the list apply\n\nIf the list is empty, this filter applies to all objects.",
+              "deprecationReason": null
+            },
+            {
+              "name": "OR",
+              "description": "A field that checks if any of the filters in the list apply.\n\nIf the list is empty, this filter applies to no objects.\n\nNote that only the items in the list *or*-combined; this complete `OR` field is *and*-combined with outer fields in the parent filter type.",
+              "deprecationReason": null
+            }
+          ]
+        },
+        {
+          "name": "I18nStringEntryFilter",
+          "description": "Filter type for entries in a I18nString.\n\nAll fields in this type are *and*-combined; see the `or` field for *or*-combination.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "language",
+              "description": "Checks if `language` equals a specified string, case-sensitively.\n\nIf an index exists on `language`, it can be used.\n\nSee also `like` for a case-insensitive filter.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_not",
+              "description": "Checks if `language` does not equal a specified string, case-sensitively.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_in",
+              "description": "Checks if `language` is equal to one of the specified values.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_not_in",
+              "description": "Checks if `language` is not equal to one of the specified values.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_lt",
+              "description": "Checks if `language` is less than a specified value.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_lte",
+              "description": "Checks if `language` is less or equal a specified value.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_gt",
+              "description": "Checks if `language` is greater than a specified value.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_gte",
+              "description": "Checks if `language` is greater or equal a specified value.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_contains",
+              "description": "Checks if `language` contains a specified string, case-sensitively.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_not_contains",
+              "description": "Checks if `language` does not contain a specified string, case-sensitively.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_starts_with",
+              "description": "Checks if `language` starts with a specified string, case-sensitively.\n\nNever uses an index. Consider using `like` (with the `%` placeholder) for a case-insensitive filter that can use an index.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_not_starts_with",
+              "description": "Checks if `language` does not start with a specified string, case-sensitively.\n\nNever uses an index. Consider using `not_like` (with the `%` placeholder) for a case-insensitive filter that can use an index.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_ends_with",
+              "description": "Checks if `language` ends with a specified string, case-sensitively.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_not_ends_with",
+              "description": "Checks if `language` does not end with a specified string, case-sensitively.",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_like",
+              "description": "Matches `language` against a pattern case-insensitively with the following placeholders:\n\n- `%` matches any sequence of characters, including the empty string\n- `_` matches exactly one character\n- `\\` can be used to escape the placeholders (use `\\\\` for a literal backslash)\n\nIf an index exists on `language`, it can be used for the literal prefix (the part until the first placeholder).",
+              "deprecationReason": null
+            },
+            {
+              "name": "language_not_like",
+              "description": "Checks if `language` does *not* match a pattern case-insensitively with the following placeholders:\n\n- `%` matches any sequence of characters, including the empty string\n- `_` matches exactly one character\n- `\\` can be used to escape the placeholders (use `\\\\` for a literal backslash)",
+              "deprecationReason": null
+            },
+            {
+              "name": "value",
+              "description": "Checks if `value` equals a specified string, case-sensitively.\n\nIf an index exists on `value`, it can be used.\n\nSee also `like` for a case-insensitive filter.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_not",
+              "description": "Checks if `value` does not equal a specified string, case-sensitively.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_in",
+              "description": "Checks if `value` is equal to one of the specified values.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_not_in",
+              "description": "Checks if `value` is not equal to one of the specified values.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_lt",
+              "description": "Checks if `value` is less than a specified value.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_lte",
+              "description": "Checks if `value` is less or equal a specified value.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_gt",
+              "description": "Checks if `value` is greater than a specified value.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_gte",
+              "description": "Checks if `value` is greater or equal a specified value.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_contains",
+              "description": "Checks if `value` contains a specified string, case-sensitively.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_not_contains",
+              "description": "Checks if `value` does not contain a specified string, case-sensitively.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_starts_with",
+              "description": "Checks if `value` starts with a specified string, case-sensitively.\n\nNever uses an index. Consider using `like` (with the `%` placeholder) for a case-insensitive filter that can use an index.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_not_starts_with",
+              "description": "Checks if `value` does not start with a specified string, case-sensitively.\n\nNever uses an index. Consider using `not_like` (with the `%` placeholder) for a case-insensitive filter that can use an index.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_ends_with",
+              "description": "Checks if `value` ends with a specified string, case-sensitively.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_not_ends_with",
+              "description": "Checks if `value` does not end with a specified string, case-sensitively.",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_like",
+              "description": "Matches `value` against a pattern case-insensitively with the following placeholders:\n\n- `%` matches any sequence of characters, including the empty string\n- `_` matches exactly one character\n- `\\` can be used to escape the placeholders (use `\\\\` for a literal backslash)\n\nIf an index exists on `value`, it can be used for the literal prefix (the part until the first placeholder).",
+              "deprecationReason": null
+            },
+            {
+              "name": "value_not_like",
+              "description": "Checks if `value` does *not* match a pattern case-insensitively with the following placeholders:\n\n- `%` matches any sequence of characters, including the empty string\n- `_` matches exactly one character\n- `\\` can be used to escape the placeholders (use `\\\\` for a literal backslash)",
               "deprecationReason": null
             },
             {
@@ -1808,12 +2001,6 @@
               "deprecationReason": null
             }
           ],
-          "inputFields": null
-        },
-        {
-          "name": "I18nString",
-          "description": "The \"I18nString\" scalar type represents an internationalized string.\n\n    Structurally, the \"I18nString`\" type is equivalent to the \"StringMap\" type. Keys are ISO 639-1 language codes, and values are the localized strings. In the future, more specific features may be added to this type, so it is preferred over the \"StringMap\" type to represent internationalized strings.\n\n    Values are *not* additionally JSON-encoded or JSON-parsed, so e.g. pass a raw JSON object here instead of a JSON-representation of that object.",
-          "fields": null,
           "inputFields": null
         },
         {
@@ -5006,183 +5193,6 @@
           "inputFields": null
         },
         {
-          "name": "I18nStringEntryFilter",
-          "description": "Filter type for entries in a I18nString.\n\nAll fields in this type are *and*-combined; see the `or` field for *or*-combination.",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "language",
-              "description": "Checks if `language` equals a specified string, case-sensitively.\n\nIf an index exists on `language`, it can be used.\n\nSee also `like` for a case-insensitive filter.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_not",
-              "description": "Checks if `language` does not equal a specified string, case-sensitively.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_in",
-              "description": "Checks if `language` is equal to one of the specified values.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_not_in",
-              "description": "Checks if `language` is not equal to one of the specified values.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_lt",
-              "description": "Checks if `language` is less than a specified value.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_lte",
-              "description": "Checks if `language` is less or equal a specified value.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_gt",
-              "description": "Checks if `language` is greater than a specified value.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_gte",
-              "description": "Checks if `language` is greater or equal a specified value.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_contains",
-              "description": "Checks if `language` contains a specified string, case-sensitively.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_not_contains",
-              "description": "Checks if `language` does not contain a specified string, case-sensitively.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_starts_with",
-              "description": "Checks if `language` starts with a specified string, case-sensitively.\n\nNever uses an index. Consider using `like` (with the `%` placeholder) for a case-insensitive filter that can use an index.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_not_starts_with",
-              "description": "Checks if `language` does not start with a specified string, case-sensitively.\n\nNever uses an index. Consider using `not_like` (with the `%` placeholder) for a case-insensitive filter that can use an index.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_ends_with",
-              "description": "Checks if `language` ends with a specified string, case-sensitively.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_not_ends_with",
-              "description": "Checks if `language` does not end with a specified string, case-sensitively.",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_like",
-              "description": "Matches `language` against a pattern case-insensitively with the following placeholders:\n\n- `%` matches any sequence of characters, including the empty string\n- `_` matches exactly one character\n- `\\` can be used to escape the placeholders (use `\\\\` for a literal backslash)\n\nIf an index exists on `language`, it can be used for the literal prefix (the part until the first placeholder).",
-              "deprecationReason": null
-            },
-            {
-              "name": "language_not_like",
-              "description": "Checks if `language` does *not* match a pattern case-insensitively with the following placeholders:\n\n- `%` matches any sequence of characters, including the empty string\n- `_` matches exactly one character\n- `\\` can be used to escape the placeholders (use `\\\\` for a literal backslash)",
-              "deprecationReason": null
-            },
-            {
-              "name": "value",
-              "description": "Checks if `value` equals a specified string, case-sensitively.\n\nIf an index exists on `value`, it can be used.\n\nSee also `like` for a case-insensitive filter.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_not",
-              "description": "Checks if `value` does not equal a specified string, case-sensitively.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_in",
-              "description": "Checks if `value` is equal to one of the specified values.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_not_in",
-              "description": "Checks if `value` is not equal to one of the specified values.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_lt",
-              "description": "Checks if `value` is less than a specified value.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_lte",
-              "description": "Checks if `value` is less or equal a specified value.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_gt",
-              "description": "Checks if `value` is greater than a specified value.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_gte",
-              "description": "Checks if `value` is greater or equal a specified value.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_contains",
-              "description": "Checks if `value` contains a specified string, case-sensitively.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_not_contains",
-              "description": "Checks if `value` does not contain a specified string, case-sensitively.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_starts_with",
-              "description": "Checks if `value` starts with a specified string, case-sensitively.\n\nNever uses an index. Consider using `like` (with the `%` placeholder) for a case-insensitive filter that can use an index.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_not_starts_with",
-              "description": "Checks if `value` does not start with a specified string, case-sensitively.\n\nNever uses an index. Consider using `not_like` (with the `%` placeholder) for a case-insensitive filter that can use an index.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_ends_with",
-              "description": "Checks if `value` ends with a specified string, case-sensitively.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_not_ends_with",
-              "description": "Checks if `value` does not end with a specified string, case-sensitively.",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_like",
-              "description": "Matches `value` against a pattern case-insensitively with the following placeholders:\n\n- `%` matches any sequence of characters, including the empty string\n- `_` matches exactly one character\n- `\\` can be used to escape the placeholders (use `\\\\` for a literal backslash)\n\nIf an index exists on `value`, it can be used for the literal prefix (the part until the first placeholder).",
-              "deprecationReason": null
-            },
-            {
-              "name": "value_not_like",
-              "description": "Checks if `value` does *not* match a pattern case-insensitively with the following placeholders:\n\n- `%` matches any sequence of characters, including the empty string\n- `_` matches exactly one character\n- `\\` can be used to escape the placeholders (use `\\\\` for a literal backslash)",
-              "deprecationReason": null
-            },
-            {
-              "name": "AND",
-              "description": "A field that checks if all filters in the list apply\n\nIf the list is empty, this filter applies to all objects.",
-              "deprecationReason": null
-            },
-            {
-              "name": "OR",
-              "description": "A field that checks if any of the filters in the list apply.\n\nIf the list is empty, this filter applies to no objects.\n\nNote that only the items in the list *or*-combined; this complete `OR` field is *and*-combined with outer fields in the parent filter type.",
-              "deprecationReason": null
-            }
-          ]
-        },
-        {
           "name": "DeliveryItemOrderBy",
           "description": null,
           "fields": null,
@@ -7628,6 +7638,11 @@
               "deprecationReason": null
             },
             {
+              "name": "descriptionI18nString",
+              "description": null,
+              "deprecationReason": null
+            },
+            {
               "name": "totalInvestment",
               "description": null,
               "deprecationReason": null
@@ -7677,6 +7692,11 @@
               "deprecationReason": null
             },
             {
+              "name": "descriptionI18nString",
+              "description": null,
+              "deprecationReason": null
+            },
+            {
               "name": "totalInvestment",
               "description": null,
               "deprecationReason": null
@@ -7705,6 +7725,11 @@
             },
             {
               "name": "description",
+              "description": null,
+              "deprecationReason": null
+            },
+            {
+              "name": "descriptionI18nString",
               "description": null,
               "deprecationReason": null
             },

@@ -1,0 +1,25 @@
+{
+  "filterI18nString": {
+    "data": {
+      "allCountries": [
+        {
+          "isoCode": "DE"
+        }
+      ]
+    }
+  },
+  "filterI18nStringWithCorrectLanguage": {
+    "data": {
+      "allCountries": [
+        {
+          "isoCode": "DE"
+        }
+      ]
+    }
+  },
+  "filterI18nStringWithIncorrectLanguage": {
+    "data": {
+      "allCountries": []
+    }
+  }
+}

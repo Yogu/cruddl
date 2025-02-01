@@ -522,6 +522,16 @@
           "deprecationReason": "OrderBy values that include relations or references are deprecated"
         },
         {
+          "name": "consignee_country_descriptionI18nString_ASC",
+          "isDeprecated": true,
+          "deprecationReason": "OrderBy values that include relations or references are deprecated"
+        },
+        {
+          "name": "consignee_country_descriptionI18nString_DESC",
+          "isDeprecated": true,
+          "deprecationReason": "OrderBy values that include relations or references are deprecated"
+        },
+        {
           "name": "consignee_country_totalInvestment_ASC",
           "isDeprecated": true,
           "deprecationReason": "OrderBy values that include relations or references are deprecated"
@@ -622,6 +632,16 @@
           "deprecationReason": "OrderBy values that include relations or references are deprecated"
         },
         {
+          "name": "destinationCountry_descriptionI18nString_ASC",
+          "isDeprecated": true,
+          "deprecationReason": "OrderBy values that include relations or references are deprecated"
+        },
+        {
+          "name": "destinationCountry_descriptionI18nString_DESC",
+          "isDeprecated": true,
+          "deprecationReason": "OrderBy values that include relations or references are deprecated"
+        },
+        {
           "name": "destinationCountry_totalInvestment_ASC",
           "isDeprecated": true,
           "deprecationReason": "OrderBy values that include relations or references are deprecated"
@@ -698,6 +718,16 @@
         },
         {
           "name": "originCountry_isoCode_DESC",
+          "isDeprecated": true,
+          "deprecationReason": "OrderBy values that include relations or references are deprecated"
+        },
+        {
+          "name": "originCountry_descriptionI18nString_ASC",
+          "isDeprecated": true,
+          "deprecationReason": "OrderBy values that include relations or references are deprecated"
+        },
+        {
+          "name": "originCountry_descriptionI18nString_DESC",
           "isDeprecated": true,
           "deprecationReason": "OrderBy values that include relations or references are deprecated"
         },
@@ -848,6 +878,16 @@
         },
         {
           "name": "destination_country_isoCode_DESC",
+          "isDeprecated": true,
+          "deprecationReason": "OrderBy values that include relations or references are deprecated"
+        },
+        {
+          "name": "destination_country_descriptionI18nString_ASC",
+          "isDeprecated": true,
+          "deprecationReason": "OrderBy values that include relations or references are deprecated"
+        },
+        {
+          "name": "destination_country_descriptionI18nString_DESC",
           "isDeprecated": true,
           "deprecationReason": "OrderBy values that include relations or references are deprecated"
         },

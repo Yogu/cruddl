@@ -15,6 +15,10 @@
             "translation": "Germany"
           }
         ],
+        "descriptionI18nString": {
+          "de": "Deutschland",
+          "en": "Germany"
+        },
         "totalInvestment": "EUR 50000000",
         "someKey": "1"
       },
@@ -31,6 +35,10 @@
             "translation": "United Kingdom"
           }
         ],
+        "descriptionI18nString": {
+          "de": "Vereinigtes Königreich",
+          "en": "United Kingdom"
+        },
         "totalInvestment": "EUR 3000000",
         "someKey": "2"
       },
@@ -47,6 +55,10 @@
             "translation": "United States"
           }
         ],
+        "descriptionI18nString": {
+          "de": "Vereinigte Staaten",
+          "en": "United States"
+        },
         "someKey": null
       },
       {
